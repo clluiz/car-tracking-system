@@ -52,4 +52,5 @@ producer = KafkaProducer(bootstrap_servers='localhost:9092',
 for coord in interpolated_route:
     print(f"{coord[0]}, {coord[1]}")
     producer.send('rota', value={'latitude': coord[0], 'longitude': coord[1]})
+    producer.flush()
     time.sleep(0.5)
