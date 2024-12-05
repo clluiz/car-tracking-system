@@ -1,24 +1,27 @@
 const { Kafka, logLevel } = require('kafkajs')
+const ip = require('ip')
+
+const host = process.env.HOST_IP || ip.address()
 
 const kafka = new Kafka({
-  logLevel: logLevel.ERROR,
-  brokers: ["192.168.1.100:9092"],
+  logLevel: logLevel.NOTHING,
+  brokers: [`${host}:9092`],
   clientId: 'example-consumer',
   retry: {
-    retries: 20
+    retries: 5,
+    initialRetryTime: 1000,
   }
 })
 
 const topic = 'rota'
-const consumer = kafka.consumer({ groupId: 'test-group' })
+const consumer = kafka.consumer({ 
+  groupId: 'test-group-2', 
+})
 
 const run = async () => {
   await consumer.connect()
   await consumer.subscribe({ topic, fromBeginning: true })
   await consumer.run({
-    eachBatch: async ({ batch }) => {
-      console.log(batch)
-    },
     eachMessage: async ({ topic, partition, message }) => {
       const prefix = `${topic}[${partition} | ${message.offset}] / ${message.timestamp}`
       console.log(`- ${prefix} ${message.key}#${message.value}`)

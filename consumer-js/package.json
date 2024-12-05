@@ -8,6 +8,7 @@
     "start": "node index.js"
   },
   "dependencies": {
+    "ip": "^2.0.1",
     "kafkajs": "2.2.4"
   },
   "keywords": [],
